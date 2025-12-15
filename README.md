@@ -29,7 +29,7 @@ This project is an open-source tool designed to help developers and students mas
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/ayam04/gepa-tests.git
+    git clone https://github.com/ayam04/prompt-optimization.git
     cd gepa-tests
     ```
 
