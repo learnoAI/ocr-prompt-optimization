@@ -1,4 +1,3 @@
-
 # OCR Prompt Optimizer for Worksheet Grading
 
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)
@@ -6,6 +5,7 @@
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg?style=flat-square)
 ![OpenAI](https://img.shields.io/badge/OpenAI-enabled-green.svg?style=flat-square)
 ![Gemini](https://img.shields.io/badge/Google%20Gemini-supported-orange.svg?style=flat-square)
+![OpenRouter](https://img.shields.io/badge/OpenRouter-300%2B%20models-purple.svg?style=flat-square)
 
 > A powerful tool to iteratively optimize OCR prompts using LLMs. Built for education with 🍑 [peach.study](https://peach.study).
 
@@ -21,7 +21,7 @@ This project is an open-source tool designed to help developers and students mas
 -   **LLM-Driven Optimization:** Automatically improves prompts over multiple iterations based on ground truth.
 -   **Feedback Loop:** Uses a "teacher" model to analyze errors and suggest specific fixes.
 -   **Local Vector Scoring:** Evaluates output quality using cosine similarity with [fastembed](https://github.com/qdrant/fastembed) (no API costs!).
--   **Multi-Provider Support:** Seamlessly switch between OpenAI and Google Gemini models.
+-   **Multi-Provider Support:** Seamlessly switch between OpenAI, Google Gemini, and **300+ models via [OpenRouter](https://openrouter.ai)** (including Meta Llama 4).
 -   **Multi-Sample Support:** Process multiple samples automatically - just add folders to the Dataset directory.
 
 
@@ -43,6 +43,7 @@ This project is an open-source tool designed to help developers and students mas
     ```env
     OPENAI_API_KEY=your_openai_key
     GEMINI_API_KEY=your_gemini_key
+    OPENROUTER_API_KEY=your_openrouter_key  # For Meta Llama & 300+ models
     ```
 
 
@@ -57,6 +58,8 @@ Run the optimizer via the CLI. The tool uses two models:
 python main.py --iterations 5 --test-model gpt-4o-mini --improve-model gpt-5.2-2025-12-11
 
 python main.py --iterations 5 --test-model gemini-2.0-flash --improve-model gemini-3-pro-preview
+
+python main.py --iterations 5 --test-model meta-llama/llama-4-scout --improve-model meta-llama/llama-4-maverick
 ```
 
 
