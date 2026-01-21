@@ -20,3 +20,7 @@ def infer_provider(model_name: str) -> str:
     for prefix in openai_prefixes:
         if model_lower.startswith(prefix):
             return "openai"
+    
+    # OpenRouter uses org/model format (e.g., meta-llama/llama-4-maverick)
+    # Also use as fallback for any unknown models
+    return "openrouter"

@@ -65,9 +65,15 @@ def clean_json_response(text: str) -> str:
 
 
 class PromptOptimizer:
-    def __init__(self, openai_api_key=None, gemini_api_key=None):
+    def __init__(self, openai_api_key=None, gemini_api_key=None, openrouter_api_key=None):
         self.openai_client = OpenAI(api_key=openai_api_key or os.getenv("OPENAI_API_KEY"))
         self.gemini_client = genai.Client(api_key=gemini_api_key or os.getenv("GEMINI_API_KEY"))
+        
+        # OpenRouter uses OpenAI-compatible API
+        self.openrouter_client = OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=openrouter_api_key or os.getenv("OPENROUTER_API_KEY")
+        )
 
     def optimize(
         self,
@@ -218,6 +224,16 @@ class PromptOptimizer:
             )
             return response.text.strip() if response.text else ""
             
+        elif provider.lower() == "openrouter":
+            response = self.openrouter_client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_instruction},
+                    {"role": "user", "content": prompt}
+                ]
+            )
+            return response.choices[0].message.content.strip()
+        
         else:
             raise ValueError(f"Unsupported model provider: {provider}")
 
@@ -259,5 +275,24 @@ class PromptOptimizer:
                  return '{"error": "empty response"}'
             return response.text
         
+        elif provider.lower() == "openrouter":
+            # OpenRouter uses same format as OpenAI for vision
+            content_parts = [{"type": "text", "text": prompt}]
+            for img_path in input_images:
+                img_base64 = encode_image_to_base64(img_path)
+                mime_type = get_image_mime_type(img_path)
+                content_parts.append({
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:{mime_type};base64,{img_base64}"
+                    }
+                })
+
+            response = self.openrouter_client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": content_parts}],
+            )
+            return response.choices[0].message.content or '{"error": "empty response"}'
+        
         else:
-            raise ValueError(f"Unsupported model provider: {provider}. Use 'openai' or 'gemini'.")
+            raise ValueError(f"Unsupported model provider: {provider}. Use 'openai', 'gemini', or 'openrouter'.")
